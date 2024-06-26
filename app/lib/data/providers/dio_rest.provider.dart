@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:tesisApp/data/providers/IRestProvider.dart';
+import 'package:tesisApp/data/dto/rest_response.dto.dart';
+import 'package:tesisApp/data/providers/rest.interface.dart';
 
 class DioRestProvider implements IRestProvider {
   final Dio _dio = Dio();
@@ -20,32 +21,80 @@ class DioRestProvider implements IRestProvider {
   }
 
   @override
-  Future<dynamic> get(String path, {Map<String, dynamic>? header}) async {
+  Future<RestResponse> get(String path, {Map<String, dynamic>? header}) async {
     // Fetch data from the network
     try {
-      final response = await _dio.get(path);
-      return response.data;
-    } catch (e) {
-      print({'Error': e});
+      final response = await _dio.get(path, options: Options(headers: header));
+      return RestResponse.fromJson({
+        'data': response.data,
+        'statusCode': response.statusCode,
+      });
+    } on DioException catch (e) {
+      return RestResponse.fromJson({
+        'data': null,
+        'statusCode': e.response?.statusCode ?? 500,
+        'errorMessage': e.toString(),
+      });
     }
   }
 
   @override
-  Future<dynamic> post(String path, Map<String, dynamic> data,
+  Future<RestResponse> post(String path, Map<String, dynamic> data,
       {Map<String, dynamic>? header}) async {
     // Send data to the network
+    try {
+      final response =
+          await _dio.post(path, data: data, options: Options(headers: header));
+      return RestResponse.fromJson({
+        'data': response.data,
+        'statusCode': response.statusCode,
+      });
+    } on DioException catch (e) {
+      return RestResponse.fromJson({
+        'data': null,
+        'statusCode': e.response?.statusCode ?? 500,
+        'errorMessage': e.toString(),
+      });
+    }
   }
 
   @override
-  Future<dynamic> patch(String path, Map<String, dynamic> data,
+  Future<RestResponse> patch(String path, Map<String, dynamic> data,
       {Map<String, dynamic>? header}) async {
     // Send data to the network
-    throw UnimplementedError('Method not implemented');
+    try {
+      final response =
+          await _dio.patch(path, data: data, options: Options(headers: header));
+      return RestResponse.fromJson({
+        'data': response.data,
+        'statusCode': response.statusCode,
+      });
+    } on DioException catch (e) {
+      return RestResponse.fromJson({
+        'data': null,
+        'statusCode': e.response?.statusCode ?? 500,
+        'errorMessage': e.toString(),
+      });
+    }
   }
 
   @override
-  Future<dynamic> delete(String path, {Map<String, dynamic>? header}) async {
+  Future<RestResponse> delete(String path,
+      {Map<String, dynamic>? header}) async {
     // Send data to the network
-    throw UnimplementedError('Method not implemented');
+    try {
+      final response =
+          await _dio.delete(path, options: Options(headers: header));
+      return RestResponse.fromJson({
+        'data': response.data,
+        'statusCode': response.statusCode,
+      });
+    } on DioException catch (e) {
+      return RestResponse.fromJson({
+        'data': null,
+        'statusCode': e.response?.statusCode ?? 500,
+        'errorMessage': e.toString(),
+      });
+    }
   }
 }

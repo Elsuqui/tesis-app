@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tesisApp/data/providers/di_container.provider.dart';
 import 'package:tesisApp/presentation/routes/app.routes.dart';
-import 'package:tesisApp/presentation/screens/home.screens.dart';
-import 'package:tesisApp/presentation/screens/qrscanner.screen.dart';
+import 'package:tesisApp/presentation/screens/home.screen.dart';
 
-void main() => runApp(
-      GetMaterialApp(
-        //home: const HomeScreen(),
-        home: const HomeScreen(),
-        routes: appRoutes,
-        debugShowCheckedModeBanner: false,
-      ),
+void main() {
+  runApp(const App());
+}
+
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      initialBinding: DiContainer(),
+      home: const HomeScreen(),
+      getPages: AppPages.pages,
+      initialRoute: '/home',
+      debugShowCheckedModeBanner: false,
     );
+  }
+}

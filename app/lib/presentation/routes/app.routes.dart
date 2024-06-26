@@ -1,8 +1,27 @@
-import 'package:flutter/material.dart';
-import 'package:tesisApp/presentation/screens/home.screens.dart';
-import 'package:tesisApp/presentation/screens/qrscanner.screen.dart';
+import 'package:get/get.dart';
+import 'package:tesisApp/presentation/bindings/menu.bindings.dart';
+import 'package:tesisApp/presentation/bindings/qrscanner.binding.dart';
+import 'package:tesisApp/presentation/screens/screens.dart';
 
-Map<String, Widget Function(BuildContext)> appRoutes = {
-  '/home': (context) => const HomeScreen(),
-  '/qrScanner': (context) => const QrScannerScreen(),
-};
+class AppPages {
+  static const home = '/home';
+  static const qrScanner = '/qrScanner';
+  static const menu = '/menu';
+
+  static final List<GetPage> pages = [
+    GetPage(
+      name: home,
+      page: () => const HomeScreen(),
+    ),
+    GetPage(
+      name: qrScanner,
+      page: () => QrScannerScreen(),
+      binding: QrScannerBinding(),
+    ),
+    GetPage(
+      name: menu,
+      page: () => const MenuScreen(),
+      binding: MenuBinding(),
+    ),
+  ];
+}

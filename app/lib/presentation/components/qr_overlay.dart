@@ -33,15 +33,16 @@ class RoundedCornerPainter extends CustomPainter {
     // Esquina superior izquierda
     canvas.drawArc(
         Rect.fromCircle(
-            center: Offset(cornerRadius, cornerRadius), radius: cornerRadius),
+            center: const Offset(cornerRadius, cornerRadius),
+            radius: cornerRadius),
         3.14,
         1.57,
         false,
         paint);
-    canvas.drawLine(
-        Offset(cornerRadius, 0), Offset(distance, 0), paint); // Línea superior
-    canvas.drawLine(
-        Offset(0, cornerRadius), Offset(0, distance), paint); // Línea izquierda
+    canvas.drawLine(const Offset(cornerRadius, 0), const Offset(distance, 0),
+        paint); // Línea superior
+    canvas.drawLine(const Offset(0, cornerRadius), const Offset(0, distance),
+        paint); // Línea izquierda
 
     // Esquina superior derecha
     canvas.drawArc(
