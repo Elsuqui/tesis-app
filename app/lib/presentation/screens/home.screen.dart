@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tesisApp/presentation/routes/app.routes.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -7,7 +8,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -62,7 +62,8 @@ class _StartButton extends StatelessWidget {
   Widget build(context) {
     return FilledButton.icon(
       onPressed: () {
-        Get.toNamed('/qrScanner');
+        //Get.toNamed('/qrScanner');
+        Get.toNamed(AppPages.menu);
       },
       icon: const Icon(Icons.qr_code),
       label: const Text(

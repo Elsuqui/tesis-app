@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:tesisApp/data/providers/di_container.provider.dart';
 import 'package:tesisApp/presentation/routes/app.routes.dart';
 import 'package:tesisApp/presentation/screens/home.screen.dart';
+import 'package:tesisApp/presentation/themes/themes.dart';
 
 void main() {
   runApp(const App());
@@ -19,6 +20,8 @@ class App extends StatelessWidget {
       getPages: AppPages.pages,
       initialRoute: '/home',
       debugShowCheckedModeBanner: false,
+      theme: Themes.lightTheme,
+      darkTheme: Themes.darkTheme,
     );
   }
 }

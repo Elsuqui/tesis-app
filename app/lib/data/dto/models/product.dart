@@ -21,12 +21,12 @@ class Product {
 
   factory Product.fromMap(Map<String, dynamic> json) {
     return Product(
-      id: json['id'],
-      name: json['name'],
-      description: json['description'],
-      imageUrl: json['imageUrl'],
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      imageUrl: json['imageUrl'] ?? '',
       price: json['price'].toString(),
-      categoryId: json['categoryId'],
+      categoryId: json['categoryId'] ?? 0,
       category:
           json['category'] != null ? Category.fromMap(json['category']) : null,
     );
