@@ -7,6 +7,10 @@ class AppPages {
   static const home = '/home';
   static const qrScanner = '/qrScanner';
   static const menu = '/menu';
+  static const categories = '/categories';
+  static const products = '/products';
+  static const search = '/search';
+  static const orderDetails = '/orderDetails';
 
   static final List<GetPage> pages = [
     GetPage(
@@ -22,6 +26,22 @@ class AppPages {
       name: menu,
       page: () => const MenuScreen(),
       binding: MenuBinding(),
+    ),
+    GetPage(
+      name: categories,
+      page: () => const CategoriesScreen(),
+    ),
+    GetPage(
+      name: products,
+      page: () => const ProductsScreen(),
+    ),
+    GetPage(
+      name: search,
+      page: () => const SearchScreen(),
+    ),
+    GetPage(
+      name: orderDetails,
+      page: () => const OrderDetailsScreen(),
     ),
   ];
 }

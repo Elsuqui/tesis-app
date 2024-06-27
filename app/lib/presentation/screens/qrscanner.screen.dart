@@ -61,10 +61,10 @@ class _BuildQrScannerScreen extends StatelessWidget {
                 width: size.width,
                 child: const Text(
                   textAlign: TextAlign.center,
-                  'Para visualizar el menú escanea el código QR de tu mesa',
+                  'Para visualizar el menú escanee el código QR de su mesa',
                   style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20.0,
+                      fontSize: 24.0,
                       fontWeight: FontWeight.bold),
                 ),
               ),
