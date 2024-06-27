@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:tesisApp/data/providers/di_container.provider.dart';
+import 'package:tesisApp/presentation/routes/app.routes.dart';
+import 'package:tesisApp/presentation/screens/home.screen.dart';
 
-import 'src/app.dart';
-import 'src/settings/settings_controller.dart';
-import 'src/settings/settings_service.dart';
-import 'package:flutter_driver/driver_extension.dart';
+void main() {
+  runApp(const App());
+}
 
-void main() async {
-  // Set up the SettingsController, which will glue user settings to multiple
-  // Flutter Widgets.
-  final settingsController = SettingsController(SettingsService());
+class App extends StatelessWidget {
+  const App({super.key});
 
-  // Load the user's preferred theme while the splash screen is displayed.
-  // This prevents a sudden theme change when the app is first displayed.
-  await settingsController.loadSettings();
-  enableFlutterDriverExtension();
-
-  // Run the app and pass in the SettingsController. The app listens to the
-  // SettingsController for changes, then passes it further down to the
-  // SettingsView.
-  runApp(MyApp(settingsController: settingsController));
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      initialBinding: DiContainer(),
+      home: const HomeScreen(),
+      getPages: AppPages.pages,
+      initialRoute: '/home',
+      debugShowCheckedModeBanner: false,
+    );
+  }
 }
