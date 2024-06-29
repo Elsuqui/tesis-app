@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:tesisApp/presentation/bindings/menu.bindings.dart';
 import 'package:tesisApp/presentation/bindings/qrscanner.binding.dart';
+import 'package:tesisApp/presentation/bindings/search.bindings.dart';
 import 'package:tesisApp/presentation/screens/screens.dart';
 
 class AppPages {
@@ -29,19 +30,20 @@ class AppPages {
     ),
     GetPage(
       name: categories,
-      page: () => const CategoriesScreen(),
+      page: () => CategoriesScreen(),
     ),
     GetPage(
       name: products,
-      page: () => const ProductsScreen(),
+      page: () => ProductsScreen(),
     ),
     GetPage(
       name: search,
-      page: () => const SearchScreen(),
+      page: () => SearchScreen(),
+      binding: SearchBinding(),
     ),
     GetPage(
       name: orderDetails,
-      page: () => const OrderDetailsScreen(),
+      page: () => OrderDetailsScreen(),
     ),
   ];
 }

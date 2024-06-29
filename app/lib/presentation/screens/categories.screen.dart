@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tesisApp/business/controllers/menu.controller.dart';
 
 class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({super.key});
+  final AppMenuController menuController = Get.find<AppMenuController>();
+  CategoriesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,20 +21,23 @@ class CategoriesScreen extends StatelessWidget {
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
           ),
-          itemCount: 10,
+          itemCount: menuController.menu.categories.length,
           itemBuilder: (context, index) {
+            final category = menuController.menu.categories[index];
             return Card(
               elevation: 5,
               child: InkWell(
                 onTap: () {
-                  Get.toNamed('/products');
+                  Get.toNamed('/products', parameters: {
+                    'categoryId': category.id.toString(),
+                  });
                 },
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     //Image.asset('assets/images/placeholder.png'),
-                    const Icon(Icons.category, size: 50),
-                    Text('Category $index'),
+                    const Icon(Icons.food_bank, size: 50),
+                    Text(category.name),
                   ],
                 ),
               ),

@@ -31,4 +31,15 @@ class Product {
           json['category'] != null ? Category.fromMap(json['category']) : null,
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'imageUrl': imageUrl,
+      'price': price,
+      'categoryId': categoryId,
+    };
+  }
 }
