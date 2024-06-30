@@ -56,4 +56,12 @@ class OrderController extends GetxController {
     modifyOrderDetailQuantity(orderDetail, orderDetail.quantity - 1);
     update();
   }
+
+  void removeProduct(OrderDetails orderDetail) {
+    // Remove the product from the list
+    orderDetails
+        .removeWhere((element) => element.productId == orderDetail.productId);
+    calculateTotal();
+    update();
+  }
 }

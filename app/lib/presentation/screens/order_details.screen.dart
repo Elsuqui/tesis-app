@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tesisApp/business/controllers/order.controller.dart';
@@ -19,16 +20,52 @@ class OrderDetailsScreen extends StatelessWidget {
       ),
       body: Column(
         children: <Widget>[
-          Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: orderController.orderDetails.length,
-              itemBuilder: (context, index) {
-                return _ItemDetail(
-                  orderDetail: orderController.orderDetails[index],
-                );
-              },
-            ),
+          GetBuilder(
+            init: orderController,
+            builder: (OrderController controller) {
+              return Expanded(
+                child: ListView.builder(
+                  itemCount: controller.orderDetails.length,
+                  itemBuilder: (context, index) {
+                    // Add swap animation to the _ItemDetail widget
+                    return Dismissible(
+                      key: ValueKey(controller.orderDetails[index].productId),
+                      background: Container(
+                        color: Colors.red,
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: const Icon(
+                          Icons.delete,
+                          size: 40.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                      dismissThresholds: const {
+                        DismissDirection.endToStart:
+                            0.2, // Necesita deslizar el 20% para activar el dismiss
+                      },
+                      confirmDismiss: (direction) async {
+                        if (direction == DismissDirection.endToStart) {
+                          // Show dialog to confirm the removal of the product
+                          return await Get.dialog(
+                            _RemoveDialog(
+                              onConfirm: () {
+                                controller.removeProduct(
+                                    controller.orderDetails[index]);
+                                Get.back(result: true);
+                              },
+                            ),
+                          );
+                        }
+                        return false;
+                      },
+                      child: _ItemDetail(
+                          orderDetail: controller.orderDetails[index]),
+                    );
+                  },
+                ),
+              );
+            },
           ),
           const Divider(height: 0.0),
           // const ListTile(
@@ -59,13 +96,20 @@ class OrderDetailsScreen extends StatelessWidget {
           ),
           //const Divider(),
           // Button to accept and pay the order
-          Container(
-            padding: const EdgeInsets.all(8.0),
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              child: const Text('Seleccionar método de pago'),
-            ),
+          GetBuilder<OrderController>(
+            builder: (controller) {
+              return Visibility(
+                visible: controller.orderDetails.isNotEmpty,
+                child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: const Text('Seleccionar método de pago'),
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -100,15 +144,14 @@ class _ItemDetail extends StatelessWidget {
                 Container(
                   width: 100.0,
                   height: 100.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    // image: DecorationImage(
-                    //   image: NetworkImage(orderDetail.product?.image ?? ''),
-                    //   fit: BoxFit.cover,
-                    // ),
-                  ),
                   // Icon of the product
-                  child: const Icon(Icons.image, size: 100.0),
+                  child: orderDetail.product?.imageUrl != null
+                      ? CachedNetworkImage(
+                          cacheKey: 'product-${orderDetail.product?.id}',
+                          imageUrl: orderDetail.product!.imageUrl!,
+                          fit: BoxFit.cover,
+                        )
+                      : const Icon(Icons.fastfood, size: 50),
                 ),
                 // Text(
                 //   'Cantidad: ${orderDetail.quantity}',
@@ -135,6 +178,16 @@ class _ItemDetail extends StatelessWidget {
                   onRemove: () {
                     if (orderDetail.quantity > 1) {
                       controller.removeQuantity(orderDetail);
+                    } else {
+                      // Open a dialog to confirm the removal of the product
+                      Get.dialog(
+                        _RemoveDialog(
+                          onConfirm: () {
+                            controller.removeProduct(orderDetail);
+                            Get.back();
+                          },
+                        ),
+                      );
                     }
                   },
                 ),
@@ -210,6 +263,31 @@ class _addIcon extends StatelessWidget {
         padding: WidgetStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
       ),
       onPressed: onPressed,
+    );
+  }
+}
+
+class _RemoveDialog extends StatelessWidget {
+  final Function()? onConfirm;
+  const _RemoveDialog({super.key, this.onConfirm});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Eliminar producto'),
+      content: const Text('¿Está seguro de eliminar este producto?'),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            Get.back(result: false);
+          },
+          child: const Text('Cancelar'),
+        ),
+        TextButton(
+          onPressed: onConfirm,
+          child: const Text('Eliminar'),
+        ),
+      ],
     );
   }
 }

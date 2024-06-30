@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tesisApp/business/controllers/order.controller.dart';
@@ -7,6 +8,7 @@ import 'package:tesisApp/data/dto/models/product.dart';
 class CardProduct extends StatelessWidget {
   final Product product;
   const CardProduct({super.key, required this.product});
+
   @override
   Widget build(BuildContext context) {
     return productContainer(context);
@@ -42,7 +44,15 @@ class CardProduct extends StatelessWidget {
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(Icons.fastfood, size: 50),
+              // Add an image to the product
+              //child: const Icon(Icons.fastfood, size: 50),
+              child: product.imageUrl != null
+                  ? CachedNetworkImage(
+                      cacheKey: 'product-${product.id}',
+                      imageUrl: product.imageUrl!,
+                      fit: BoxFit.cover,
+                    )
+                  : const Icon(Icons.fastfood, size: 50),
             ),
             const SizedBox(height: 10),
             Container(

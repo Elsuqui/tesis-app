@@ -24,7 +24,7 @@ class Product {
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       description: json['description'] ?? '',
-      imageUrl: json['imageUrl'] ?? '',
+      imageUrl: json['image_url'],
       price: json['price'].toString(),
       categoryId: json['categoryId'] ?? 0,
       category:
