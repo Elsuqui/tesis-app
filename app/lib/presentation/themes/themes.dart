@@ -6,6 +6,7 @@ class Themes {
     primaryColor: const Color(0xFFF6F7EB),
     scaffoldBackgroundColor: const Color(0xFFF6F7EB),
     appBarTheme: const AppBarTheme(
+      foregroundColor: Colors.white,
       backgroundColor: Color(0xFF393E41),
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(

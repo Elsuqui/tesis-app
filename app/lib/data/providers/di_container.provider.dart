@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:tesisApp/business/controllers/order.controller.dart';
 import 'package:tesisApp/data/providers/dio_rest.provider.dart';
 
 class DiContainer implements Bindings {
@@ -12,6 +13,7 @@ class DiContainer implements Bindings {
   void registerGlobalControllers() {
     // For example:
     // Get.lazyPut(() => RestaurantController(Get.find()));
+    Get.put(OrderController());
   }
 
   void registerGlobalServices() {

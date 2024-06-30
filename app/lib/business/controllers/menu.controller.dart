@@ -40,9 +40,11 @@ class AppMenuController extends GetxController {
     isLoading.value = true;
     await Future.delayed(const Duration(seconds: 1));
     final MenuResponseDto responseMenu = await _menuService.requestMenu();
-    final defaultCategory = Category(id: 0, name: 'Todas');
+    final defaultCategory = Category(id: 0, name: 'Todos');
     menu = Menu(categories: [defaultCategory, ...responseMenu.categories]);
-    selectedCategory = defaultCategory;
+    if (responseMenu.categories.isNotEmpty) {
+      selectedCategory = responseMenu.categories.first;
+    }
     productsByCategory = getProductsBySelectedCategory();
     update(); // Update the UI with menu
     isLoading.value = false;
@@ -54,4 +56,31 @@ class AppMenuController extends GetxController {
     productsByCategory = getProductsBySelectedCategory();
     update(); // Update the UI with selected category
   }
+
+  Category getCategoryById(int categoryId) {
+    if (categoryId == 0) {
+      return Category(
+        id: 0,
+        name: 'Todos',
+        products: getProductsByCategoryId(categoryId),
+      );
+    }
+    return menu.categories.firstWhere((element) => element.id == categoryId);
+  }
+
+  List<Product> getProductsByCategoryId(int categoryId) {
+    if (categoryId == 0) {
+      return menu.categories
+          .where((category) => category.products != null)
+          .map((category) => category.products!)
+          .expand((element) => element)
+          .toList();
+    }
+    final category =
+        menu.categories.firstWhere((element) => element.id == categoryId);
+    return category.products ?? [];
+  }
+
+  List<Category> getCategoryList() =>
+      menu.categories.where((category) => category.id > 0).toList();
 }

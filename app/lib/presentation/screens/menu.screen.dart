@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tesisApp/business/controllers/menu.controller.dart';
+import 'package:tesisApp/business/controllers/order.controller.dart';
+import 'package:tesisApp/business/controllers/order_detail.controller.dart';
 import 'package:tesisApp/data/dto/models/category.dart';
 import 'package:tesisApp/data/dto/models/menu.dart';
 import 'package:tesisApp/data/dto/models/product.dart';
+import 'package:tesisApp/presentation/components/card_product.dart';
 import 'package:tesisApp/presentation/routes/app.routes.dart';
 
 class MenuScreen extends StatelessWidget {
@@ -11,13 +14,15 @@ class MenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GetX<AppMenuController>(
-        builder: (AppMenuController menuController) {
-          return menuController.isLoading.value
-              ? const Center(child: CircularProgressIndicator())
-              : SafeArea(child: _BuildMenuScreen(menuController.menu));
-        },
+    return SafeArea(
+      child: Scaffold(
+        body: GetX<AppMenuController>(
+          builder: (AppMenuController menuController) {
+            return menuController.isLoading.value
+                ? const Center(child: CircularProgressIndicator())
+                : _BuildMenuScreen(menuController.menu);
+          },
+        ),
       ),
     );
   }
@@ -53,15 +58,20 @@ class _BuildMenuScreen extends StatelessWidget {
               //   icon: const Icon(Icons.menu),
               // ),
               //const Spacer(),
-              IconButton(
-                onPressed: () {
-                  Get.toNamed(AppPages.orderDetails);
-                },
-                icon: const Icon(
-                  Icons.shopping_cart,
-                  size: 30,
-                ),
-              ),
+              Obx(() {
+                return Visibility(
+                  visible: Get.find<OrderController>().orderDetails.isNotEmpty,
+                  child: IconButton(
+                    onPressed: () {
+                      Get.toNamed(AppPages.orderDetails);
+                    },
+                    icon: const Icon(
+                      Icons.grading_sharp,
+                      size: 30,
+                    ),
+                  ),
+                );
+              }),
             ],
           ),
           const _MenuTitle('Restaurante \n Resto'),
@@ -170,22 +180,23 @@ class _CategorySection extends StatelessWidget {
         // Horizontal Scrollable Category List
         GetBuilder<AppMenuController>(
           builder: (menuController) {
+            final categories = menuController.getCategoryList();
             return SizedBox(
               height: 150,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: menu.categories.length,
+                itemCount: categories.length,
                 itemBuilder: (context, index) {
                   final isSelected = menuController.selectedCategory?.id ==
-                      menu.categories[index].id;
+                      categories[index].id;
                   return InkWell(
                     overlayColor:
                         const WidgetStatePropertyAll(Colors.transparent),
                     onTap: () {
-                      menuController.selectCategory(menu.categories[index]);
+                      menuController.selectCategory(categories[index]);
                     },
                     child: _CategoryCard(
-                      category: menu.categories[index],
+                      category: categories[index],
                       isSelected: isSelected,
                     ),
                   );
@@ -266,39 +277,10 @@ class _PopularPlates extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final Product product =
                         menuController.productsByCategory[index];
-                    return _PlateCard(product: product);
+                    return CardProduct(product: product);
                   },
                 ));
               }),
-        ],
-      ),
-    );
-  }
-}
-
-class _PlateCard extends StatelessWidget {
-  final Product product;
-  const _PlateCard({required this.product});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(10),
-      width: 100,
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Icon(Icons.fastfood, size: 50),
-          // SizedBox(height: 10),
-          // Text('Hamburguesa'),
-          //Text('Hollaaa'),
-          _PlateDetails(
-            product: product,
-          ),
         ],
       ),
     );
@@ -343,89 +325,3 @@ class _PlateCard extends StatelessWidget {
 //     );
 //   }
 // }
-
-class _PlateDetails extends StatelessWidget {
-  final Product product;
-  const _PlateDetails({required this.product});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          children: [
-            Container(
-              width: 100,
-              height: 100,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(Icons.fastfood, size: 50),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-              color: const Color(0xFF393E41),
-              child: Text(
-                '\$ ${product.price}',
-                textAlign: TextAlign.start,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                product.name,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 20,
-                ),
-              ),
-              Text(
-                product.description,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 15,
-                ),
-              ),
-              const SizedBox(height: 10),
-              // Add a right button to add to cart
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ActionChip.elevated(
-                    onPressed: () {},
-                    label: const Text(
-                      'Añadir',
-                    ),
-                    elevation: 5,
-                    labelStyle: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
